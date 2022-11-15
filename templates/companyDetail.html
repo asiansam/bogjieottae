@@ -11,6 +11,10 @@
   <title>복지어때</title>
   <link rel="stylesheet" href="../static/css/common.css" type="text/css">
   <script>
+    let apiData = "";
+    let deleteData = "";
+
+    // let commentData = "";
     document.addEventListener("DOMContentLoaded", function(){
 
       const urlParams = new URL(location.href).searchParams;
@@ -23,15 +27,92 @@
         data: {"company":company},
         success: function (response) {
           apiData = response['company_detail']
+          getCommentCall(apiData['companyName']);
           document.getElementById("companyName").innerHTML = `<span>${apiData['companyName']}</span>`;
           document.getElementById("companyInfo").innerText = `${apiData['companyInfo']}`;
           document.getElementById("logo").src = apiData['companyLogo'];
         }
       });
     }
+    const getCommentCall = function (companyName) {
+      console.log(companyName);
+      $.ajax({
+        type: 'get',
+        url: '/api/getComment',
+        data: {"company": companyName},
+        success: function (response) {
+          for(let i=0; i<response['comment'].length; i++){
+            const commentData = response['comment'][i];
+            let liTag = document.createElement("li");
+            liTag.innerHTML = `
+              <div>
+                  <strong>${commentData['user']}</strong>
+                  <span>${commentData['commentDate']}</span>
+                  <span class="deleteBtn" style="cursor: pointer">X</span>
+              </div>
+              <div>
+                  <span>${commentData['comment']}</span>
+              </div>
+            `
+            liTag.childNodes
+            const commentId = commentData['user'] + "_" + commentData['commentNumber'];
+            liTag.querySelector(".deleteBtn").id = commentId
+            document.getElementById("commentList").append(liTag);
+            document.getElementById(commentId).addEventListener("click",()=>{
+              onModal();
+              deleteData = commentData;
+            })
+          }
+        }
+      });
+    }
+    const onModal = function (){
+      modal.style.display = "flex";
+    }
+
+    const closeModal = function (){
+      modal.style.display = "none";
+    }
+    const deleteComment = function () {
+      console.log(deleteData)
+      $.ajax({
+        type: 'delete',
+        url: '/api/deleteComment',
+        data: deleteData,
+        success: function (response) {
+          // console.log(response);
+          window.location.reload();
+        }
+      });
+    }
     const moveHome = function (){
       let link = "/";
       window.location.href = link;
+    }
+
+    const commentWrite = function (){
+      let today = new Date();
+      const comment = document.getElementById("inputComment").value;
+      const nowDate = today.getFullYear()+ "-" + (today.getMonth() + 1) + "-" + today.getDate()
+      let formData = new FormData()
+
+      formData.append("companyName",apiData['companyName']);
+      formData.append("comment",comment);
+      formData.append("date",nowDate);
+      formData.append("user","HEE");
+
+      $.ajax({
+        type: 'POST',
+        url: '/api/inputComment',
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData,
+        success: function (response) {
+          window.location.reload()
+          console.log(response['msg']);
+        }
+      });
     }
   </script>
   <style>
@@ -43,6 +124,7 @@
       height: 450px;
       border: 1px solid black;
       margin-bottom: 5px;
+      overflow-y: scroll;
     }
     .comment{
       overflow: hidden;
@@ -96,23 +178,21 @@
           <span class="input-group-text">댓글</span>
           <textarea class="form-control" id="inputComment"></textarea>
         </div>
-        <button class="commentBtn">등록</button>
+        <button class="commentBtn" onclick="commentWrite()">등록</button>
       </div>
-      <ul id="commentList" class="commentList">
-        <li>
-          <div>
-            <strong>닉네임</strong>
-            <span>(2022-11-15)</span>
-            <span class="deleteBtn">X</span>
-          </div>
-          <div>
-            <span>
-              너무가고싶은 회사에요!!
-            </span>
-          </div>
-        </li>
-
-      </ul>
+      <ul id="commentList" class="commentList"></ul>
+    </div>
+  </div>
+  <div id="modal" class="modal-overlay">
+    <div class="modal-window">
+      <div class="title">
+        <h2>Alert</h2>
+      </div>
+      <div class="content">댓글을 삭제 할까요?</div>
+      <div class="modal-footer">
+        <button id="cancelBtn" onclick="closeModal()">취소</button>
+        <button id="checkBtn" style="display: block" onclick="deleteComment()">확인</button>
+      </div>
     </div>
   </div>
 </body>

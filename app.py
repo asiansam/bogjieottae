@@ -15,6 +15,7 @@ db = client.bogjieottae
 
 app = Flask(__name__)
 FILE_PATH = f"static/img/"
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -27,6 +28,23 @@ def view_create_company():
 def view_company_detail():
     return render_template('companyDetail.html')
 
+@app.route('/api/deleteComment',methods=["DELETE"])
+def delete_comment():
+    try:
+        db.comment.delete_one({"commentNumber": int(request.form["commentNumber"]),"companyName":request.form["companyName"]})
+        return jsonify({'msg': 'successfully!'})
+    except:
+        print("Error")
+@app.route('/api/getComment')
+def get_comment():
+    try:
+        company_name = request.args.get("company")
+        company_search = db.comment.find({"companyName":company_name},{'_id':False})
+        req = list(company_search)
+        return jsonify({"comment":req})
+    except:
+        print("Error~~~")
+
 @app.route('/api/inputComment',methods=["POST"])
 def post_comment():
     try:
@@ -37,6 +55,24 @@ def post_comment():
         companyName = "회사명"
         companyType = "유저명"
         '''
+        commentList = list(db.comment.find({"companyName":request.form["companyName"]},{'_id':False}))
+
+        if(len(commentList) > 0):
+            count = commentList[-1]['commentNumber'] + 1
+        else:
+            count = 1
+
+
+        doc = {
+            "commentNumber":count,
+            "commentDate":request.form["date"],
+            "comment":request.form["comment"],
+            "companyName":request.form["companyName"],
+            "user":request.form["user"]
+        }
+        db.comment.insert_one(doc)
+        print(list(db.comment.find({},{'_id':False})))
+        return jsonify({'msg': 'successfully!'})
     except:
         print("ERROR")
 @app.route('/api/detail',methods=["GET"])
@@ -104,6 +140,7 @@ def create_company_poast():
     print(list(db.company.find({},{'_id':False})))
 
     return jsonify({'msg': 'successfully!'})
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
