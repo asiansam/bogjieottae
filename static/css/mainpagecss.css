@@ -1,0 +1,132 @@
+
+html,
+body {
+    width: 100%;
+    height: 105%;
+    margin: 0;
+    background-color: #ffffccff
+}
+
+.main-infoBox-area {
+    margin-left: auto;
+    margin-right: auto;
+    height: 90%;
+    width: 60%;
+
+}
+
+.main-infoBox {
+    margin-left: auto;
+    margin-right: auto;
+    border: solid;
+    height: 170px;
+    width: 100%;
+    border-radius: 30px;
+    display: block;
+    background-color: #FCFF7E;
+    float: left;
+    margin-top: 5px;
+}
+
+.infoBox-comIcon {
+    width: 170px;
+    height: 100%;
+    border-radius: 29px;
+    float: left;
+}
+
+.infoBox-comDisc {
+    margin-left: 180px;
+    height: 60%;
+    word-break: break-all;
+    margin-top: 70px;
+}
+
+.infoBox-title {
+    margin-top: 5px;
+    margin-left: 5px;
+    display: flex;
+    float: left;
+    font-size: 30px;
+}
+
+.heart {
+    margin-top: 10px;
+    margin-right: 10px;
+    float: right;
+    width: 30px;
+    height: 30px;
+}
+
+.nav {
+    width: 100%;
+    height: 10%;
+
+    justify-content: space-around;
+}
+
+.pagination {
+    padding-bottom: 2%;
+}
+
+.page-link {
+    color: #999;
+    background-color: #000;
+    border-color: #444;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #ccc;
+    font-weight: bold;
+    background-color: #333;
+    border-color: #444;
+
+}
+
+.page-link:focus, .page-link:hover {
+    color: #ccc;
+    background-color: #222;
+    border-color: #444;
+}
+
+.logo {
+    margin: 10px;
+    width: 200px;
+    height: 65%;
+    display: flex;
+}
+
+.nickname {
+    margin-top: 10px;
+    width: 150px;
+    height: 50px;
+    border: solid;
+    display: flex;
+    border-radius: 10px;
+    background-color: antiquewhite;
+    justify-content: center;
+    padding: 10px;
+
+}
+
+.logout {
+    margin-top: 5px;
+    width: 100px;
+    height: 40px;
+    border: solid;
+    display: flex;
+    border-radius: 10px;
+    background-color: indianred;
+    justify-content: center;
+    padding: 5px;
+}
+
+.com-add-btn {
+    margin-top: 10px;
+    width: 150px;
+    height: 50px;
+    border: solid;
+    border-radius: 20px;
+    background-color: orange;
+}
