@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -22,7 +21,8 @@
         }
         .header{
             padding: 10px;
-            margin-left: 55px;
+            margin-left: 100px;
+            margin-right: 100px;
             border: 1px;
         }
         .input-group.mb-3 > *{
@@ -33,12 +33,12 @@
             background-color: white;
             height: 100%;
             padding: 20px;
-            margin-left: 55px;
-            margin-right: 55px;
+            margin-left: 100px;
+            margin-right: 100px;
             border: 1px;
         }
         button{
-            background-color: rgb(252,133,130);
+            background-color: #999999;
             border: 0;
             outline: 0;
             cursor: pointer;
@@ -46,6 +46,7 @@
             margin-top: 10px;
             margin-left: 10px;
             height: 50px;
+            color: white;
 
         }
         textarea{
@@ -98,7 +99,7 @@
         .modal-footer > button{
         }
         .filebox{
-            float: left;
+            margin-top: 5px;
         }
         .filebox .upload-name {
             display: inline-block;
@@ -106,7 +107,7 @@
             padding: 0 10px;
             vertical-align: middle;
             border: 1px solid #dddddd;
-            width: 78%;
+            width: 30%;
             color: #999999;
         }
         .filebox label {
@@ -130,8 +131,16 @@
     </style>
     <script>
         let modal;
+        let fileObj;
         window.onload = function () {
             modal = document.getElementById("modal");
+            const fileUpload = document.querySelector('#file');
+            fileUpload.addEventListener('change',data => {
+                fileObj = fileUpload.files[0];
+                const fileName = fileObj['name'];
+                document.querySelector('.upload-name').value = fileName;
+            })
+
         }
         const moveHome = function (){
             let link = "/";
@@ -146,15 +155,37 @@
             modal.style.display = "none";
         }
         const createCompany = function (){
-            const companyName = document.getElementById("companyName").value;
+            const companyName = document.getElementById('companyName').value;
             const companyInfo = document.getElementById('companyInfo').value;
+            const companyLogo = fileObj === undefined ? "" : fileObj;
+            // print(companyLogo);
+            let formData = new FormData()
+            formData.append("companyName",companyName)
+            formData.append("companyInfo",companyInfo)
+            formData.append("companyLogo",fileObj)
+
+            console.log(companyLogo)
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/createcompany',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (response) {
+                    console.log(response['msg'])
+                }
+            });
         }
     </script>
 </head>
 <body class="main">
     <div class="container">
         <div class="header">
-            <div style="width: 50px; height: 50px; border: 1px solid #bcbcbc;"></div>
+            <div style="width: 50px; height: 50px; margin-bottom: 5px">
+                <img style="width: 200px" src="../static/img/logo.png">
+            </div>
         </div>
         <div class="body">
             <div class="input-group mb-3">
@@ -162,13 +193,15 @@
             </div>
             <div>
                 <div class="input-group">
-                    <textarea class="form-control" id="companyInfo" placeholder=" 회사 복지를 소개해주세요" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea>
+                    <textarea class="form-control" id="companyInfo" placeholder="회사 복지를 소개해주세요" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea>
                 </div>
             </div>
             <div class="filebox">
-                <input class="upload-name" value="첨부파일" placeholder="첨부파일">
+                <input class="upload-name" value="첨부파일" placeholder="첨부파일" disabled>
                 <label for="file">파일찾기</label>
-                <input type="file" id="file">
+                <input type="file" id="file" accept="image/*">
+<!--                <input type="file" class="real-upload" accept="image/*" required multiple style="display: none;">-->
+<!--                <div class="upload"></div>-->
             </div>
             <div class="buttonGroup">
                 <button onclick="createCompany()">등록하기</button>
