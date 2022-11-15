@@ -27,6 +27,14 @@ def view_create_company():
 def view_company_detail():
     return render_template('companyDetail.html')
 
+@app.route('/main')
+def view_main_Page():
+    return render_template('mainPage.html')
+
+@app.route('/profile')
+def view_profile_Page():
+    return render_template('MyProfile.html')
+
 @app.route('/api/inputComment',methods=["POST"])
 def post_comment():
     try:
@@ -104,6 +112,11 @@ def create_company_poast():
     print(list(db.company.find({},{'_id':False})))
 
     return jsonify({'msg': 'successfully!'})
+@app.route("/mainpage/api", methods=["GET"])
+def url_get():
+    company_list = list(db.company.find({}, {'_id': False}))
+
+    return jsonify({'company':company_list})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
