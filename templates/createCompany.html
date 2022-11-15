@@ -14,7 +14,9 @@
         let modal;
         let fileObj;
         window.onload = function () {
+            //모달창
             modal = document.getElementById("modal");
+            //파일업로드
             const fileUpload = document.querySelector('#file');
             fileUpload.addEventListener('change',data => {
                 fileObj = fileUpload.files[0];
@@ -23,48 +25,73 @@
             })
 
         }
+        //홈으로 이동하는 메서드
         const moveHome = function (){
             let link = "/";
             modal.style.display = "none";
             window.location.href = link;
         }
-        const onModal = function (){
-            console.log(modal);
+        //동적모달창 띄우기
+        const onModal = function (msgObj,btnHidden){
+            //모달창 내용
+            document.querySelector(".content").innerHTML = msgObj['msg'];
+            //취소버튼 Text 바꾸기
+            document.getElementById("cancelBtn").innerText = msgObj['cancelBtn'];
+            //check버튼 Text 바꾸기
+            document.getElementById("checkBtn").innerText = msgObj['checkBtn'];
+
+            //버튼 한개만 보이게 하기
+            if(btnHidden){
+                document.getElementById("checkBtn").style.display = "none"
+            }else {
+                document.getElementById("checkBtn").style.display = "block"
+            }
+            //모달창 보이기
             modal.style.display = "flex";
         }
+        //모달창 닫기
         const closeModal = function (){
             modal.style.display = "none";
         }
+        //회사생성
         const createCompany = function (){
             const companyName = document.getElementById('companyName').value;
             const companyInfo = document.getElementById('companyInfo').value;
-            const companyLogo = fileObj === undefined ? "" : fileObj;
-            // print(companyLogo);
-            let formData = new FormData()
-            formData.append("companyName",companyName)
-            formData.append("companyInfo",companyInfo)
-            formData.append("companyLogo",fileObj)
 
-            console.log(companyLogo)
-
-            $.ajax({
-                type: 'POST',
-                url: '/api/createcompany',
-                cache: false,
-                contentType: false,
-                processData: false,
-                data: formData,
-                success: function (response) {
-                    console.log(response['msg'])
+            if(companyName === "" && companyInfo === ""){
+                modalMsgObj = {
+                    msg: "<span>회사명과 회사정보를 입력해주세요!!!</span>",
+                    cancelBtn: "확인",
+                    checkBtn: ""
                 }
-            });
+                onModal(modalMsgObj,true)
+                console.log("또 모달을 만들어야해? ~~~~")
+            }else {
+                let formData = new FormData()
+                formData.append("companyName",companyName)
+                formData.append("companyInfo",companyInfo)
+                formData.append("companyLogo",fileObj)
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/createcompany',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    success: function (response) {
+                        console.log(response['msg']);
+                        moveHome();
+                    }
+                });
+            }
         }
     </script>
 </head>
 <body class="main">
     <div class="container">
         <div class="header">
-            <div style="width: 50px; height: 50px; margin-bottom: 5px">
+            <div style="width: 50px; height: 50px; margin-bottom: 5px; cursor: pointer;" onclick="moveHome()">
                 <img style="width: 200px" src="../static/img/logo.png">
             </div>
         </div>
@@ -86,7 +113,7 @@
             </div>
             <div class="buttonGroup">
                 <button onclick="createCompany()">등록하기</button>
-                <button onclick="onModal()">취소하기</button>
+                <button onclick="onModal({msg:'<span>정말 나가시겠습니까?</span><p>입력한 데이터는 저장되지 않습니다.</p>',cancelBtn: '취소',checkBtn: '확인'},false)">취소하기</button>
             </div>
         </div>
     </div>
@@ -96,12 +123,10 @@
                 <h2>Alert</h2>
             </div>
             <div class="content">
-                <span>정말 취소하시겠습니까?</span>
-                <p>입력한 모든 데이터가 삭제됩니다.</p>
             </div>
             <div class="modal-footer">
-                <button onclick="closeModal()">취소</button>
-                <button onclick="moveHome()">확인</button>
+                <button id="cancelBtn"  onclick="closeModal()">취소</button>
+                <button id="checkBtn" style="display: block" onclick="moveHome()">확인</button>
             </div>
         </div>
     </div>
