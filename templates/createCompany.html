@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <title>복지어때</title>
+    <style>
+        .main{
+            background-color: #ffffccff;
+        }
+        .container {
+            width: 100%;
+            height: 95%;
+            margin: 10px auto;
+            padding: 5px;
+        }
+        .header{
+            padding: 10px;
+            margin-left: 55px;
+            border: 1px;
+        }
+        .input-group.mb-3 > *{
+            height: 50px;
+            background-color: white;
+        }
+        .body{
+            background-color: white;
+            height: 100%;
+            padding: 20px;
+            margin-left: 55px;
+            margin-right: 55px;
+            border: 1px;
+        }
+        button{
+            background-color: rgb(252,133,130);
+            border: 0;
+            outline: 0;
+            cursor: pointer;
+            width: 200px;
+            margin-top: 10px;
+            margin-left: 10px;
+            height: 50px;
+
+        }
+        textarea{
+            width: 100%;
+            height: 450px;
+            background-color: white;
+            resize:none;
+            border-radius: 8px;
+        }
+        .buttonGroup > *{
+            float: right;
+        }
+        .buttonGroup{
+            overflow: hidden;
+        }
+        .modal-overlay{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(1.5px);
+            -webkit-backdrop-filter: blur(1.5px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+
+        }
+        #modal .modal-window {
+            background: rgba( 69, 139, 197, 0.70 );
+            box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+            backdrop-filter: blur( 13.5px );
+            -webkit-backdrop-filter: blur( 13.5px );
+            border-radius: 10px;
+            border: 1px solid rgba( 255, 255, 255, 0.18 );
+            width: 600px;
+            height: 500px;
+            position: relative;
+            top: -100px;
+            padding: 10px;
+        }
+        .modal-footer {
+            float: left;
+        }
+        .modal-footer > button{
+        }
+        .filebox{
+            float: left;
+        }
+        .filebox .upload-name {
+            display: inline-block;
+            height: 40px;
+            padding: 0 10px;
+            vertical-align: middle;
+            border: 1px solid #dddddd;
+            width: 78%;
+            color: #999999;
+        }
+        .filebox label {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            vertical-align: middle;
+            background-color: #999999;
+            cursor: pointer;
+            height: 40px;
+            margin-left: 10px;
+        }
+        .filebox input[type="file"] {
+            position: absolute;
+            width: 0;
+            height: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 0;
+        }
+    </style>
+    <script>
+        let modal;
+        window.onload = function () {
+            modal = document.getElementById("modal");
+        }
+        const moveHome = function (){
+            let link = "/";
+            modal.style.display = "none";
+            window.location.href = link;
+        }
+        const onModal = function (){
+            console.log(modal);
+            modal.style.display = "flex";
+        }
+        const closeModal = function (){
+            modal.style.display = "none";
+        }
+        const createCompany = function (){
+            const companyName = document.getElementById("companyName").value;
+            const companyInfo = document.getElementById('companyInfo').value;
+        }
+    </script>
+</head>
+<body class="main">
+    <div class="container">
+        <div class="header">
+            <div style="width: 50px; height: 50px; border: 1px solid #bcbcbc;"></div>
+        </div>
+        <div class="body">
+            <div class="input-group mb-3">
+                <input id="companyName" placeholder="회사명 입력해 주세요" type="text" class="form-control">
+            </div>
+            <div>
+                <div class="input-group">
+                    <textarea class="form-control" id="companyInfo" placeholder=" 회사 복지를 소개해주세요" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea>
+                </div>
+            </div>
+            <div class="filebox">
+                <input class="upload-name" value="첨부파일" placeholder="첨부파일">
+                <label for="file">파일찾기</label>
+                <input type="file" id="file">
+            </div>
+            <div class="buttonGroup">
+                <button onclick="createCompany()">등록하기</button>
+                <button onclick="onModal()">취소하기</button>
+            </div>
+        </div>
+    </div>
+    <div id="modal" class="modal-overlay">
+        <div class="modal-window">
+            <div class="title">
+                <h2>Alert</h2>
+            </div>
+            <div class="content">
+                <span>정말 취소하시겠습니까?</span>
+                <p>입력한 모든 데이터가 삭제됩니다.</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()">취소</button>
+                <button onclick="moveHome()">확인</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
