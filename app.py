@@ -20,8 +20,35 @@ def home():
     return render_template('index.html')
 
 @app.route('/createcompany')
-def creat_company():
+def view_create_company():
     return render_template('createCompany.html')
+
+@app.route('/detail',methods=["GET"])
+def view_company_detail():
+    return render_template('companyDetail.html')
+
+@app.route('/api/inputComment',methods=["POST"])
+def post_comment():
+    try:
+        '''
+        commentNumber = "번호"
+        commentDate = "날짜"
+        comment = "댓글 내용"
+        companyName = "회사명"
+        companyType = "유저명"
+        '''
+    except:
+        print("ERROR")
+@app.route('/api/detail',methods=["GET"])
+def get_detail_company():
+    try:
+        company_name = request.args.get("company")
+        company_search = db.company.find({"companyName":company_name},{'_id':False})
+        req = list(company_search)
+        req[0]['companyLogo'] = FILE_PATH + req[0]['companyLogo']
+        return jsonify({"company_detail":req[0]})
+    except:
+        print("ERROR")
 
 @app.route('/api/createcompany',methods=["POST"])
 def create_company_poast():
