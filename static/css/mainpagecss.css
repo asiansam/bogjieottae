@@ -35,11 +35,15 @@ body {
     float: left;
 }
 
-.infoBox-comDisc {
+.infoBox-comDesc {
     margin-left: 180px;
-    height: 60%;
+    height: 50%;
     word-break: break-all;
     margin-top: 70px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
 }
 
 .infoBox-title {
