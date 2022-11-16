@@ -7,7 +7,6 @@ import certifi
 import jwt
 import hashlib
 
-
 dotenv_file = dotenv.find_dotenv()
 dotenv.load_dotenv(dotenv_file)
 
@@ -48,15 +47,25 @@ def register():
 
 @app.route('/api/register', methods=['POST'])
 def api_register():
+    ## 웹에서 계정정보를 받아 와요
     id_receive = request.form['id_give']
     pw_receive = request.form['pw_give']
-    nickname_receive = request.form['nickname_give']
+    nickname_receive = str(request.form['nickname_give'])
+    print(request.form)
+    ## 아이디 조회/닉네임 조회부터 할께요!
+    print(db.user.find_one({'id':id_receive}, {'_id': False}))
+    idList = db.user.find_one({'id':id_receive}, {'_id': False})
+    nickList = db.user.find_one({'nick':nickname_receive}, {'_id': False})
 
-    pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
+    if( idList != None):
+        return jsonify({'result': '중복된 아이디 입니다.'})
+    elif(nickList != None):
+        return jsonify({'result': '중복된 닉네임 입니다.'})
+    else:
+        pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
+        db.user.insert_one({'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive , 'is_saved':[]})
 
-    db.user.insert_one({'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive , 'is_saved':[]})
-
-    return jsonify({'result': 'success'})
+        return jsonify({'result': 'success'})
 @app.route('/api/login', methods=['POST'])
 def api_login():
     id_receive = request.form['id_give']
@@ -110,11 +119,23 @@ def view_company_detail():
 def view_main_Page():
     return render_template('mainPage.html')
 
+
 @app.route('/api/deleteComment',methods=["DELETE"])
 def delete_comment():
     try:
-        db.comment.delete_one({"commentNumber": int(request.form["commentNumber"]),"companyName":request.form["companyName"]})
-        return jsonify({'msg': 'successfully!'})
+        #현재 접속한 사용자
+        token_receive = request.cookies.get('mytoken')
+        user = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        #
+        userinfo = db.user.find_one({'id': user['id']}, {'_id': 0})
+        print("찾은유저는!!!",userinfo)
+
+        find_comment = list(db.comment.find({"commentNumber": int(request.form["commentNumber"]), "companyName": request.form["companyName"], "user":userinfo["nick"]},{'_id':False}))
+        if(len(find_comment) > 0):
+            db.comment.delete_one({"commentNumber": int(request.form["commentNumber"]),"companyName":request.form["companyName"]})
+            return jsonify({'msg': 'successfully!'})
+        else:
+            return jsonify({'msg': '본인 댓글만 삭제할 수 있습니다!'})
     except:
         print("Error")
 @app.route('/api/getComment')
@@ -232,9 +253,46 @@ def create_company_poast():
 
 @app.route("/api/mainpage", methods=["GET"])
 def url_get():
-    company_list = list(db.company.find({}, {'_id': False}))
+    token_receive = request.cookies.get('mytoken')
 
-    return jsonify({'company':company_list})
+    try:
+
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        print(payload)
+        company_list = list(db.company.find({}, {'_id': False}))
+
+        # payload 안에 id가 들어있습니다. 이 id로 유저정보를 찾습니다.
+        # 여기에선 그 예로 닉네임을 보내주겠습니다.
+        userinfo = db.user.find_one({'id': payload['id']}, {'_id': 0})
+        return jsonify({'result': 'success', 'user': userinfo,'company':company_list})
+    except jwt.ExpiredSignatureError:
+        return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
+    except jwt.exceptions.DecodeError:
+        return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
+
+@app.route("/api/LIKE", methods=["POST"])
+def comnum_post():
+    num_receive = request.form["comnum_give"]
+
+    token_receive = request.cookies.get('mytoken')
+
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+
+
+    userinfo = db.user.find_one({'id': payload['id']}, {'_id': 0})
+
+
+
+    numarr = list(userinfo['is_saved'])
+
+    print(numarr, payload)
+
+    numarr.append(num_receive)
+
+    db.user.update_one({'id': payload['id']}, {'$set':{'is_saved':numarr}})
+
+    return jsonify({'msg': '좋아요!'})
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

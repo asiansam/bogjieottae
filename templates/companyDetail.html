@@ -13,10 +13,11 @@
   <script>
     let apiData = "";
     let deleteData = "";
+    let user = "";
 
     // let commentData = "";
     document.addEventListener("DOMContentLoaded", function(){
-
+      myUser();
       const urlParams = new URL(location.href).searchParams;
       getDetailCall(urlParams.get('company'));
     });
@@ -34,6 +35,19 @@
         }
       });
     }
+
+    const myUser = function (){
+      $.ajax({
+        type: 'get',
+        url: '/api/nick',
+        data: {},
+        success: function (response) {
+          user = response['nickname'];
+        }
+      });
+    }
+
+
     const getCommentCall = function (companyName) {
       console.log(companyName);
       $.ajax({
@@ -59,14 +73,55 @@
             liTag.querySelector(".deleteBtn").id = commentId
             document.getElementById("commentList").append(liTag);
             document.getElementById(commentId).addEventListener("click",()=>{
-              onModal();
-              deleteData = commentData;
+              let msgObj
+              if(user === commentData['user']){
+                msgObj = {
+                  text: "댓글을 삭제 할까요?",
+                  cancelBtn: true,
+                  approveBtn: true,
+                  cancelName: "취소",
+                  approveName: "확인"
+                }
+                deleteData = commentData;
+              }else {
+                msgObj = {
+                  text: "본인 댓글만 삭제 할 수 있습니다.",
+                  cancel: true,
+                  approveBtn: false,
+                  cancelBtn: "확인",
+                  approveName: ""
+                }
+                console.log("삭제를 못해요!!")
+              }
+              onModal(msgObj);
+
             })
           }
         }
       });
     }
-    const onModal = function (){
+    const onModal = function (msgObj){
+      //모달 텍스트
+      document.getElementById("modalMain").innerText = msgObj['text'];
+      console.log(msgObj)
+
+      //취소버튼 이벤트
+      if(msgObj['cancel']) {
+        document.getElementById("cancelBtn").style.display = "block"
+        document.getElementById("cancelBtn").innerText = msgObj['cancelBtn']
+      } else {
+        document.getElementById("cancelBtn").style.display = "none"
+      }
+
+      //승인버튼 이벤트
+      if(msgObj['approveBtn']) {
+        document.getElementById("checkBtn").style.display = "block"
+        document.getElementById("checkBtn").innerText = msgObj['approveName']
+      } else {
+        document.getElementById("checkBtn").style.display = "none"
+
+      }
+
       modal.style.display = "flex";
     }
 
@@ -86,7 +141,7 @@
       });
     }
     const moveHome = function (){
-      let link = "/";
+      let link = "/main";
       window.location.href = link;
     }
 
@@ -99,7 +154,7 @@
       formData.append("companyName",apiData['companyName']);
       formData.append("comment",comment);
       formData.append("date",nowDate);
-      formData.append("user","HEE");
+      formData.append("user",user);
 
       $.ajax({
         type: 'POST',
@@ -167,7 +222,7 @@
   <div class="container">
     <div class="header">
       <div style="width: 50px; height: 50px; margin-bottom: 5px;">
-        <img id="logo" style="height: 60px; width: 60px">
+        <img id="logo" style="height: 60px; width: 60px; cursor: pointer" onclick="moveHome()">
       </div>
     </div>
     <div class="body">
@@ -188,9 +243,9 @@
       <div class="title">
         <h2>Alert</h2>
       </div>
-      <div class="content">댓글을 삭제 할까요?</div>
+      <div class="content" id="modalMain"></div>
       <div class="modal-footer">
-        <button id="cancelBtn" onclick="closeModal()">취소</button>
+        <button id="cancelBtn" style="display: block" onclick="closeModal()">취소</button>
         <button id="checkBtn" style="display: block" onclick="deleteComment()">확인</button>
       </div>
     </div>
