@@ -12,7 +12,7 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
-
+    <script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,15 +20,19 @@
     <link href="{{ url_for('static', filename='css/mainpagecss.css') }}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="../static/css/mainpagecss.css" type="text/css">
 
+
+
     <title>복지어때</title>
 
     <style>
-
+        *{
+            font-family: 'Jua', sans-serif;
+        }
     </style>
     <script>
         $(document).ready(function () {
             mainpostap();
-            //profileid();
+            profileid();
         });
 
 
@@ -39,29 +43,31 @@
                 data: {},
                 success: function (response) {
                     let company = response['company']
-                    console.log(company)
-                    //let is_saved = response['user']
-                    for (let i = company.length-1; i > -1; i--) {
+                    let user = response['user']
+                    let heart = user['is_saved']
+                    let num1 = heart.map(i=>Number(i))
+                    console.log(num1)
+                    for (let i = company.length - 1; i > -1; i--) {
                         let companyname = company[i]['companyName']
                         let url = company[i]['companyLogo']
                         let desc = company[i]['companyInfo']
-                        let heart = true
-                        if (is_saved === true) {
+                        let comnum = company[i]['companyNumber']
+                        console.log(comnum)
+                        if (num1.includes(comnum)) {
                             let temp_html = `
                                                              <div class="main-infoBox">
                                                 <img class="infoBox-comIcon" src="static/img/${url}">
                                                 <div class="infoBox-title">
-                                                    <a href="/detail">
+                                                    <a href="/detail?company=${companyname}">
                                                         ${companyname}
                                                     </a>
                                                 </div>
                                                 <div class="heart">
-                                                    <a onclick="favorite()">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart"
-                                                         viewBox="0 0 16 16">
-                                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                      <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                                                     </svg>
-                                                    </a>
+
                                                 </div>
                                                 <div>
                                                     <p class="infoBox-comDesc">
@@ -73,17 +79,19 @@
                             $('#infoBox').append(temp_html)
                         } else {
                             let temp_html = `
-                                                             <div class="main-infoBox">
+                                                       <div class="main-infoBox">
                                                 <img class="infoBox-comIcon" src="static/img/${url}">
                                                 <div class="infoBox-title">
-                                                    <a href="/detail">
+                                                    <a href="/detail?company=${companyname}">
                                                         ${companyname}
                                                     </a>
                                                 </div>
                                                 <div class="heart">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                                                      <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                                                    </svg>
+                                                   <a onclick="favorite(${comnum})">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart"
+                                                             viewBox="0 0 16 16">
+                                                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                                       </a>
                                                 </div>
                                                 <div>
                                                     <p class="infoBox-comDesc">
@@ -91,7 +99,7 @@
                                                     </p>
                                                 </div>
                                             </div>
-                                                           `
+                                                            `
                             $('#infoBox').append(temp_html)
 
                         }
@@ -101,48 +109,50 @@
             })
         }
 
-        //    function profileid() {
-        //      $.ajax({
-        //         type: "GET",
-        //      url: "",
-        //     data: {},
-        //    success: function (response) {
-        //        let nickname = response['user']['name']
-        //        if (nickname === true){
-        //             <button class="nickname" onclick="location.href='${profilepage}'" id="profileid">
-        //                 ${nickname}
-        //             </button>
-        //         } else {
-        //         }
-        //     }
-        //   })
-        // }
+        function profileid() {
+            $.ajax({
+            type: "GET",
+            url: "/api/mainpage",
+            data: {},
+            success: function (response) {
+                let nickname = response['user']['nick']
+                let temp_html = `<button class="nickname" onclick="profile()" id="profileid">
+                                    ${nickname}
+                                </button>`
+                $('#profile-btn').append(temp_html)
 
-        function logout() {
-            $.removeCookie('mytoken');
-            alert('로그아웃!')
-            window.location.href = '/login'
+            }
+        })
         }
+
+       function logout(){
+        $.removeCookie('mytoken');
+        alert('로그아웃!')
+        window.location.href='/'
+      }
 
 
         function addPost() {
-            let link = "/";
+            let link = "/createcompany";
+            window.location.href = link;
+        }
+        function profile() {
+            let link = "/profile";
             window.location.href = link;
         }
 
-        function favorite() {
+        function favorite(comnum) {
             $.ajax({
                 type: "post",
-                url: "",
-                data: {},
+                url: "/api/LIKE",
+                data: {comnum_give: comnum},
                 success: function (response) {
-                    let nickname = response['user']['nickname']
-                    if (true) {
-                    } else {
-                    }
+                    alert(response["msg"])
+                    window.location.reload()
                 }
             })
         }
+
 
 
     </script>
@@ -150,14 +160,15 @@
 <body class="main-background">
 <div class="nav">
     <a href=""><img class="logo" src="/static/img/logo.png"></a>
-    <div id="profile-btn">
-        <button class="nickname" onclick="profile()" id="profileid">
-            김00님
-        </button>
-        <button class="logout" onclick="logout()">
-            로그아웃
-        </button>
+    <div >
+        <div id="profile-btn">
 
+        </div>
+        <div>
+            <button class="logout" onclick="logout()">
+                로그아웃
+            </button>
+        </div>
     </div>
 </div>
 
