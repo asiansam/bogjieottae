@@ -23,6 +23,10 @@ def home():
 def view_create_company():
     return render_template('createCompany.html')
 
+@app.route('/profile')
+def view_profile_Page():
+    return render_template('MyProfile.html')
+
 @app.route('/detail',methods=["GET"])
 def view_company_detail():
     return render_template('companyDetail.html')
@@ -39,6 +43,13 @@ def post_comment():
         '''
     except:
         print("ERROR")
+
+@app.route("/api/profile", methods=["GET"])
+def url_get():
+    company_list = list(db.company.find({}, {'_id': False}))
+
+    return jsonify({'company':company_list})
+
 @app.route('/api/detail',methods=["GET"])
 def get_detail_company():
     try:
