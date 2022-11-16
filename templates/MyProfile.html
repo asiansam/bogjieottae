@@ -12,7 +12,7 @@
             crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
     <title>복지어때</title>
-    <link rel="stylesheet" href="../static/css/common.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/mainpagecss.css" type="text/css">
     <style>
         .nickname > button {
             border-radius: 50px;
@@ -25,6 +25,35 @@
         $(document).ready(function () {
             mainpostap();
         });
+
+        function addPost() {
+            let link = "/";
+            window.location.href = link;
+        }
+
+        function () {
+            let link = "/";
+            window.location.href = link;
+        }
+
+        function () {
+            $.ajax({
+                type: "GET",
+                url: "/api/profile",
+                data: {},
+                success: function (response) {
+                    let company = response['company']
+
+                    for (let i = 0; i < company.length; i++) {
+                        let company_name = company[i]['companyName']
+                        let logo = company[i]['companyLogo']
+                        let temp_html = ` `
+                        $('#infoBox').append(temp_html)
+
+
+
+
+
 
         function mainpostap() {
             $.ajax({
@@ -44,14 +73,14 @@
                             <img src="../static/img/${logo}" class="img-fluid rounded-start" alt="...">
                         </div>
                         <div class="col-md-8">
-                            <div class="card-body" style="margin-top: 30px; ">
+                            <div class="card-body" style="margin-top: 60px; ">
 
-                                <h1 class="card-text"
-                                    style="display: inline; flex-direction: column;">
+                                <h1 class="card-text" onclick=""
+                                    style="display: inline; flex-direction: column; margin-left: 50px;">
                                     ${company_name}</h1>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                                      class="bi bi-heart"
-                                     viewBox="0 0 16 16" onclick="favorite()" style="float:right; margin-top: 10px;">
+                                     viewBox="0 0 16 16" onclick="favorite()" style="float:right; margin-top: 12px;">
                                     <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
 
                                 </svg>
@@ -67,23 +96,24 @@
     </script>
 </head>
 <body class="main">
-<div class="container" >
-    <div class="header" >
+<div class="container">
+    <div class="header">
         <div style="width: 50px; height: 50px; margin-bottom: 20px">
-            <a href="http://localhost:2000/main"><img style="width: 200px" src="../static/img/logo.png"></a>
+            <a href="http://localhost:5000/main"><img style="width: 200px" src="../static/img/logo.png"></a>
         </div>
-        <div class="nickname">
-            <div style="width: 50px; height: 50px;  margin-bottom: 5px; float:right;">
-                <div id="profile-btn">
-                    <button class="nickname" onclick="profile()" id="profileid"
-                            style="width: 100px; border-radius: 50px; float:left;">
-                        김00님
-                    </button>
-                    <img style="width: 100px; border-radius: 50px" src="../static/img/이미지.png" class="radius_img_1">
-                    <button type="button" class="btn-warning" style="border-radius: 50px">로그아웃</button>
-                </div>
-            </div>
-        </div>
-        <div class="body" id="infoBox">
+    </div>
+</div>
+
+<div id="profile-btn" style="margin: 80px, auto; margin-left: 20px; width: 200px; float: right; margin-bottom: 1000px">
+    <button class="nickname" onclick="profile()" id="profileid">
+        김00님
+    </button>
+    <img style="width: 100px; border-radius: 50px" src="../static/img/이미지.png" class="radius_img_1">
+    <button class="logout" onclick="addPost()">
+        로그아웃
+    </button>
+</div>
+<div class="body" id="infoBox">
+</div>
 </body>
 </html>
