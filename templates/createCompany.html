@@ -13,6 +13,11 @@
     <script>
         let modal;
         let fileObj;
+        let user;
+        document.addEventListener("DOMContentLoaded", function(){
+            myUser();
+        });
+
         window.onload = function () {
             //모달창
             modal = document.getElementById("modal");
@@ -25,9 +30,21 @@
             })
 
         }
+
+        const myUser = function (){
+            $.ajax({
+                type: 'get',
+                url: '/api/nick',
+                data: {},
+                success: function (response) {
+                    user = response['nickname'];
+                }
+            });
+        }
+
         //홈으로 이동하는 메서드
         const moveHome = function (){
-            let link = "/";
+            let link = "/main";
             modal.style.display = "none";
             window.location.href = link;
         }
@@ -70,6 +87,7 @@
                 formData.append("companyName",companyName)
                 formData.append("companyInfo",companyInfo)
                 formData.append("companyLogo",fileObj)
+                formData.append("owner",user)
 
                 $.ajax({
                     type: 'POST',
@@ -133,7 +151,7 @@
             <div class="content">
             </div>
             <div class="modal-footer">
-                <button id="cancelBtn"  onclick="closeModal()">취소</button>
+                <button id="cancelBtn"  style="display: block" onclick="closeModal()">취소</button>
                 <button id="checkBtn" style="display: block" onclick="moveHome()">확인</button>
             </div>
         </div>
