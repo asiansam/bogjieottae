@@ -4,12 +4,15 @@ from flask import Flask, render_template, request, jsonify
 from pymongo import MongoClient
 from datetime import datetime
 import certifi
+import jwt
+import hashlib
+
 
 dotenv_file = dotenv.find_dotenv()
 dotenv.load_dotenv(dotenv_file)
 
 ca = certifi.where()
-client = MongoClient(os.environ["mongodb+srv://test:test@cluster0.szrupu4.mongodb.net/?retryWrites=true&w=majority"],tlsCAFile=ca)
+client = MongoClient(os.environ["mongDB"],tlsCAFile=ca)
 
 db = client.bogjieottae
 
@@ -18,11 +21,6 @@ FILE_PATH = f"static/img/"
 
 SECRET_KEY = 'SPARTA'
 
-import jwt
-
-import datetime
-
-import hashlib
 
 @app.route('/')
 def home():
@@ -96,9 +94,6 @@ def api_valid():
     except jwt.exceptions.DecodeError:
     return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
-if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
-
 
 @app.route('/')
 def home():
@@ -120,6 +115,23 @@ def view_company_detail():
 def view_main_Page():
     return render_template('mainPage.html')
 
+@app.route('/api/deleteComment',methods=["DELETE"])
+def delete_comment():
+    try:
+        db.comment.delete_one({"commentNumber": int(request.form["commentNumber"]),"companyName":request.form["companyName"]})
+        return jsonify({'msg': 'successfully!'})
+    except:
+        print("Error")
+@app.route('/api/getComment')
+def get_comment():
+    try:
+        company_name = request.args.get("company")
+        company_search = db.comment.find({"companyName":company_name},{'_id':False})
+        req = list(company_search)
+        return jsonify({"comment":req})
+    except:
+        print("Error~~~")
+
 @app.route('/api/inputComment',methods=["POST"])
 def post_comment():
     try:
@@ -130,6 +142,24 @@ def post_comment():
         companyName = "회사명"
         companyType = "유저명"
         '''
+        commentList = list(db.comment.find({"companyName":request.form["companyName"]},{'_id':False}))
+
+        if(len(commentList) > 0):
+            count = commentList[-1]['commentNumber'] + 1
+        else:
+            count = 1
+
+
+        doc = {
+            "commentNumber":count,
+            "commentDate":request.form["date"],
+            "comment":request.form["comment"],
+            "companyName":request.form["companyName"],
+            "user":request.form["user"]
+        }
+        db.comment.insert_one(doc)
+        print(list(db.comment.find({},{'_id':False})))
+        return jsonify({'msg': 'successfully!'})
     except:
         print("ERROR")
 
