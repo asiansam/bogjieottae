@@ -7,7 +7,6 @@ import certifi
 import jwt
 import hashlib
 
-
 dotenv_file = dotenv.find_dotenv()
 dotenv.load_dotenv(dotenv_file)
 
@@ -109,6 +108,7 @@ def view_company_detail():
 @app.route('/main')
 def view_main_Page():
     return render_template('mainPage.html')
+
 
 @app.route('/api/deleteComment',methods=["DELETE"])
 def delete_comment():
@@ -232,9 +232,46 @@ def create_company_poast():
 
 @app.route("/api/mainpage", methods=["GET"])
 def url_get():
-    company_list = list(db.company.find({}, {'_id': False}))
+    token_receive = request.cookies.get('mytoken')
 
-    return jsonify({'company':company_list})
+    try:
+
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        print(payload)
+        company_list = list(db.company.find({}, {'_id': False}))
+
+        # payload 안에 id가 들어있습니다. 이 id로 유저정보를 찾습니다.
+        # 여기에선 그 예로 닉네임을 보내주겠습니다.
+        userinfo = db.user.find_one({'id': payload['id']}, {'_id': 0})
+        return jsonify({'result': 'success', 'user': userinfo,'company':company_list})
+    except jwt.ExpiredSignatureError:
+        return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
+    except jwt.exceptions.DecodeError:
+        return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
+
+@app.route("/api/LIKE", methods=["POST"])
+def comnum_post():
+    num_receive = request.form["comnum_give"]
+
+    token_receive = request.cookies.get('mytoken')
+
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+
+
+    userinfo = db.user.find_one({'id': payload['id']}, {'_id': 0})
+
+
+
+    numarr = list(userinfo['is_saved'])
+
+    print(numarr, payload)
+
+    numarr.append(num_receive)
+
+    db.user.update_one({'id': payload['id']}, {'$set':{'is_saved':numarr}})
+
+    return jsonify({'msg': '좋아요!'})
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
