@@ -293,6 +293,27 @@ def comnum_post():
 
     return jsonify({'msg': '좋아요!'})
 
+@app.route("/api/remove", methods=["POST"])
+def remove_post():
+    num_receive = request.form["numremove"]
+
+    token_receive = request.cookies.get('mytoken')
+
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+
+
+    userinfo = db.user.find_one({'id': payload['id']}, {'_id': 0})
+
+
+    numarr = list(userinfo['is_saved'])
+
+    numarr.remove(num_receive)
+
+    db.user.update_one({'id': payload['id']}, {'$set':{'is_saved':numarr}})
+
+    return jsonify({'msg': '싫어요!'})
+
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
