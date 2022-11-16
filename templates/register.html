@@ -14,45 +14,42 @@
 
         <script>
             function register() {
-                $.ajax({
-                    type: "POST",
-                    url: "/api/register",
-                    data: {
-                        nickname_give: $('#usernick').val(),
-                        id_give: $('#userid').val(),
-                        pw_give: $('#userpw').val()
+                const user = $('#userid').val();
+                const pw = $('#userpw').val();
+                const nickName = $('#usernick').val();
+                if(user.length > 0 && pw.length > 0 && nickName.length > 0){
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/register",
+                        data: {
+                            nickname_give: $('#usernick').val(),
+                            id_give: $('#userid').val(),
+                            pw_give: $('#userpw').val()
 
-                    },
-                    success: function (response) {
-                        if (response['result'] == 'success') {
-                            alert('회원가입이 완료되었습니다.')
-                            window.location.href = '/login'
-                        } else {
-                            alert(response['msg'])
+                        },
+                        success: function (response) {
+                            console.log("내가 콜된다!");
+                            console.log(response)
+                            if (response['result'] == 'success') {
+                                alert('회원가입이 완료되었습니다.')
+                                window.location.href = '/login'
+                            } else {
+                                console.log(response['result'])
+                                alert(response['result'])
+                                window.location.reload()
+                            }
                         }
+                    })
+                }else {
+                    if(user.length === 0){
+                        alert("아이디를 입력해 주세요");
+                    }else if(pw.length === 0){
+                        alert("PW를 입력해 주세요");
+                    }else {
+                        alert("닉네임을 입력해 주세요");
                     }
-                })
+                }
             }
-            function register() {
-                $.ajax({
-                    type: "POST",
-                    url: "/api/register",
-                    data: {
-                        id_give: $('#userid').val(),
-                        pw_give: $('#userpw').val(),
-                        nickname_give: $('#usernick').val()
-                    },
-                    success: function (response) {
-                        if (response['result'] == 'success') {
-                            alert('회원가입이 완료되었습니다.')
-                            window.location.href = '/login'
-                        } else {
-                            alert(response['msg'])
-                        }
-                    }
-                })
-            }
-
         </script>
         <style>
             html{
