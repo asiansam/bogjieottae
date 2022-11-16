@@ -13,6 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
     <title>복지어때</title>
     <link rel="stylesheet" href="../static/css/mainpagecss.css" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <style>
         .nickname > button {
             border-radius: 50px;
@@ -24,6 +26,7 @@
     <script>
         $(document).ready(function () {
             mainpostap();
+            profileid();
         });
 
         function addPost() {
@@ -31,63 +34,82 @@
             window.location.href = link;
         }
 
-        function () {
-            let link = "/";
-            window.location.href = link;
+
+        function logout() {
+            $.removeCookie('mytoken');
+            alert('로그아웃!')
+            window.location.href = '/'
         }
 
-        function () {
+
+        function profileid() {
             $.ajax({
                 type: "GET",
-                url: "/api/profile",
+                url: "/api/mainpage",
                 data: {},
                 success: function (response) {
-                    let company = response['company']
+                    let nickname = response['user']['nick']
+                    let temp_html = `<button class="nickname" id="profileid">
+                                                ${nickname}
+                                            </button>`
+                    $('#profile-btn').append(temp_html)
 
-                    for (let i = 0; i < company.length; i++) {
-                        let company_name = company[i]['companyName']
-                        let logo = company[i]['companyLogo']
-                        let temp_html = ` `
-                        $('#infoBox').append(temp_html)
+                }
+            })
+        }
 
-
-
-
-
+        function favorite (remove) {
+            $.ajax({
+                type: "post",
+                url: "/api/remove",
+                data: {numremove: remove},
+                success: function (response) {
+                alert(response["msg"])
+                    window.location.reload() }
+            })}
 
         function mainpostap() {
             $.ajax({
                 type: "GET",
-                url: "/api/profile",
+                url: "/api/mainpage",
                 data: {},
                 success: function (response) {
                     let company = response['company']
+                    let user = response['user']
+                    let heart = user['is_saved']
+                    let num1 = heart.map(i => Number(i))
 
-                    for (let i = 0; i < company.length; i++) {
-                        let company_name = company[i]['companyName']
-                        let logo = company[i]['companyLogo']
-                        let temp_html = `<div class="card mb-3"
+
+                    for (let i = company.length - 1; i > -1; i--) {
+                        let companyname = company[i]['companyName']
+                        let url = company[i]['companyLogo']
+                        let comnum = company[i]['companyNumber']
+                        if (num1.includes(comnum)) {
+                            let temp_html = `<div class="card mb-3"
                      style="max-width: 600px; margin:auto; height: auto; display: flex; flex-direction: column; justify-content:center; align-items: center;">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="../static/img/${logo}" class="img-fluid rounded-start" alt="...">
+                            <img src="../static/img/${url}" class="img-fluid rounded-start" alt="...">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body" style="margin-top: 60px; ">
 
                                 <h1 class="card-text" onclick=""
                                     style="display: inline; flex-direction: column; margin-left: 50px;">
-                                    ${company_name}</h1>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                     class="bi bi-heart"
-                                     viewBox="0 0 16 16" onclick="favorite()" style="float:right; margin-top: 12px;">
-                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                    ${companyname}</h1>
+                                            <a onclick="favorite(${comnum})">
+                                            <svg  xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16" style="margin-left: 150px">
 
-                                </svg>
+                                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                                                    </svg>
+                                               </a>
                             </div>
                         </div>
                     </div>`
-                        $('#infoBox').append(temp_html)
+                            $('#infoBox').append(temp_html)
+                        } else {
+
+                        }
                     }
                 }
             })
@@ -104,12 +126,12 @@
     </div>
 </div>
 
-<div id="profile-btn" style="margin: 80px, auto; margin-left: 20px; width: 200px; float: right; margin-bottom: 1000px">
-    <button class="nickname" onclick="profile()" id="profileid">
-        김00님
-    </button>
+<div style="margin: 80px, auto; margin-left: 20px; width: 200px; float: right; margin-bottom: 1000px">
+    <div id="profile-btn">
+
+    </div>
     <img style="width: 100px; border-radius: 50px" src="../static/img/이미지.png" class="radius_img_1">
-    <button class="logout" onclick="addPost()">
+    <button class="logout" onclick="logout()">
         로그아웃
     </button>
 </div>
