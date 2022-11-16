@@ -1,6 +1,6 @@
 import dotenv
 import os
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 from pymongo import MongoClient
 from datetime import datetime
 import certifi
@@ -28,6 +28,7 @@ def home():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.user.find_one({"id": payload['id']})
+        userinfo = db.user.find_one({'id': payload['id']}, {'_id': 0})
         return render_template('index.html', nickname=user_info["nick"])
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
