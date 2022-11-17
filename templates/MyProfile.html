@@ -21,8 +21,21 @@
 
     <script>
         $(document).ready(function () {
-            mainpostap();
-            profileid();
+            $.ajax({
+                type: 'get',
+                url: '/api/auth',
+                data: {},
+                success: function (res) {
+                    console.log(res)
+                    if(res['result'] === "fail"){
+                        alert("유효하지 않은 접근입니다.")
+                        window.location.href = '/'
+                    }else {
+                        mainpostap();
+                        profileid();
+                    }
+                }
+            });
         });
 
         function addPost() {

@@ -15,7 +15,21 @@
         let fileObj;
         let user;
         document.addEventListener("DOMContentLoaded", function(){
-            myUser();
+            $.ajax({
+                type: 'get',
+                url: '/api/auth',
+                data: {},
+                success: function (res) {
+                    console.log(res)
+                    if(res['result'] === "fail"){
+                        alert("유효하지 않은 접근입니다.")
+                        window.location.href = '/'
+                    }else {
+                        myUser();
+                    }
+                }
+            });
+
         });
 
         window.onload = function () {
@@ -75,7 +89,7 @@
             const companyName = document.getElementById('companyName').value;
             const companyInfo = document.getElementById('companyInfo').value;
 
-            if(companyName === "" && companyInfo === ""){
+            if(companyName === "" || companyInfo === ""){
                 modalMsgObj = {
                     msg: "<span>회사명과 회사정보를 입력해주세요!!!</span>",
                     cancelBtn: "확인",

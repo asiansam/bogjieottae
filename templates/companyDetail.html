@@ -17,9 +17,22 @@
 
     // let commentData = "";
     document.addEventListener("DOMContentLoaded", function(){
-      myUser();
-      const urlParams = new URL(location.href).searchParams;
-      getDetailCall(urlParams.get('company'));
+      $.ajax({
+        type: 'get',
+        url: '/api/auth',
+        data: {},
+        success: function (res) {
+          console.log(res)
+          if(res['result'] === "fail"){
+            alert("유효하지 않은 접근입니다.")
+            window.location.href = '/'
+          }else {
+            myUser();
+            const urlParams = new URL(location.href).searchParams;
+            getDetailCall(urlParams.get('company'));
+          }
+        }
+      });
     });
     const getDetailCall = function (company){
       $.ajax({

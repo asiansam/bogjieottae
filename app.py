@@ -25,6 +25,17 @@ SECRET_KEY = 'SPARTA'
 def home():
     return render_template('login.html')
 
+@app.route('/api/auth')
+def login_check():
+    #로그인 토큰이 유효한지 체크하는 API입니다
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        return jsonify({'result': 'success'})
+    except jwt.ExpiredSignatureError:
+        return jsonify({'result': 'fail'})
+    except jwt.exceptions.DecodeError:
+        return jsonify({'result': 'fail'})
 
 
 @app.route('/login')
