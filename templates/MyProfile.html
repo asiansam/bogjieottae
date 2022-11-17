@@ -81,26 +81,28 @@
                         let url = company[i]['companyLogo']
                         let comnum = company[i]['companyNumber']
                         if (num1.includes(comnum)) {
-                            let temp_html = ` <div class="card mb-3"
+                            let temp_html = `<div class="card mb-3"
                      style="max-width: 600px; margin:auto; height: auto; display: flex; flex-direction: column; justify-content:center; align-items: center;">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="../static/img/${url}" class="img-fluid rounded-start" alt="...">
-                        </div>
+                                 <img src="../static/img/${url}" class="img-fluid rounded-start" alt="...">                        </div>
                         <div class="col-md-8">
                             <div class="card-body" style="margin-top: 60px; ">
-
-                                <h1 class="card-text" onclick=""
-                                    style="display: inline; flex-direction: column; margin-left: 50px;">
+                                <a href="/detail?company=${companyname}">
+                                <h1 class="card-text"
+                                    style="display: inline; flex-direction: column; margin-left: 20px;">
                                     ${companyname}</h1>
+                                </a>
+                            </div>
+                            <div class="heartbox">
                                             <a onclick="favorite(${comnum})">
-                                            <svg  xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16" style="margin-left: 150px">
+                                            <svg  xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16" >
 
                                             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                                                     </svg>
                                                </a>
-                            </div>
-                        </div>
+                                </div>
+                    </div>
                     </div>`
                             $('#infoBox').append(temp_html)
                         } else {
@@ -151,13 +153,21 @@
         .logout{
             margin-top: 20px;
         }
+        .heartbox{
+            margin-left: 340px;
+        }
+        .card-text{
+            border: solid;
+            display: inline-block;
+            position: absolute;
+        }
     </style>
 </head>
 <body class="main">
 <div class="container">
     <div class="header">
         <div >
-            <a href="http://localhost:5000/main"><img class="logo1" src="../static/img/logo.png"></a>
+            <a href="/main"><img class="logo1" src="../static/img/logo.png"></a>
         </div>
     </div>
 </div>
