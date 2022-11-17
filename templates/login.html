@@ -10,6 +10,9 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 
 
         <script>
@@ -36,10 +39,43 @@
 
         </script>
         <style>
+              *{
+            font-family: 'Jua', sans-serif;
+              }
             html{
                 height: 100%;
                 background-color: #ffffccff;
                 !important
+            }
+            .section{
+                margin-top: 250px;
+                margin-left: auto;
+                margin-right: auto;
+                width: 800px;
+                height: 500px;
+                justify-items: center;
+                background-color: #FCFF7E;
+                border-radius: 40px;
+            }
+            .title{
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 50px;
+            }
+            .container{
+                margin-left: 110px;
+            }
+            .input{
+                border-radius: 10px;
+                border-bottom: solid;
+            }
+            .button{
+                margin-left: 80px;
+                margin-top: 20px;
+                font-family: 'Jua', sans-serif;
+            }
+            input::placeholder{
+                font-weight: bold;
             }
         </style>
 
@@ -52,7 +88,7 @@
             <div class="container" style="width:60%">
                 <div class="field is-horizontal">
                     <div class="field-label is-normal">
-                        <label class="label" for="userid">ID</label>
+                        <label class="label" for="userid"></label>
                     </div>
                     <div class="field-body">
                         <div class="field">
@@ -66,7 +102,7 @@
                 </div>
                 <div class="field is-horizontal">
                     <div class="field-label is-normal">
-                        <label class="label" for="userpw">PW</label>
+                        <label class="label" for="userpw"></label>
                     </div>
                     <div class="field-body">
                         <div class="field">

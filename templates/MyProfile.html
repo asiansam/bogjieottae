@@ -15,13 +15,9 @@
     <link rel="stylesheet" href="../static/css/mainpagecss.css" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-    <style>
-        .nickname > button {
-            border-radius: 50px;
-
-        }
-
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 
     <script>
         $(document).ready(function () {
@@ -85,7 +81,7 @@
                         let url = company[i]['companyLogo']
                         let comnum = company[i]['companyNumber']
                         if (num1.includes(comnum)) {
-                            let temp_html = `<div class="card mb-3"
+                            let temp_html = ` <div class="card mb-3"
                      style="max-width: 600px; margin:auto; height: auto; display: flex; flex-direction: column; justify-content:center; align-items: center;">
                     <div class="row g-0">
                         <div class="col-md-4">
@@ -116,18 +112,58 @@
         }
 
     </script>
+    <style>
+          *{
+            font-family: 'Jua', sans-serif;
+              }
+        .nickname > button {
+            border-radius: 50px;
+        }
+        .card{
+            border-radius: 20px;
+        }
+        .col-md-4{
+
+            border-radius: 20px;
+        }
+
+        .body{
+            margin-top: 100px;
+
+        }
+        .profile-lo{
+            margin-top: 50px;
+            margin-left: 45%;
+
+
+        }
+        .logo1{
+            margin-top: 20px;
+            width: 200px;
+        }
+        .img-fluid{
+            border-radius: 20px;
+        }
+        .nickname-lo{
+            float: right;
+            margin-right: 100px;
+        }
+        .logout{
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body class="main">
 <div class="container">
     <div class="header">
-        <div style="width: 50px; height: 50px; margin-bottom: 20px">
-            <a href="http://localhost:5000/main"><img style="width: 200px" src="../static/img/logo.png"></a>
+        <div >
+            <a href="http://localhost:5000/main"><img class="logo1" src="../static/img/logo.png"></a>
         </div>
     </div>
 </div>
 
-<div style="margin: 80px, auto; margin-left: 20px; width: 200px; float: right; margin-bottom: 1000px">
-    <div id="profile-btn">
+<div class="profile-lo">
+    <div class="nickname-lo" id="profile-btn">
 
     </div>
     <img style="width: 100px; border-radius: 50px" src="../static/img/이미지.png" class="radius_img_1">
@@ -136,6 +172,7 @@
     </button>
 </div>
 <div class="body" id="infoBox">
+
 </div>
 </body>
 </html>

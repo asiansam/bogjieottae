@@ -11,6 +11,9 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 
         <script>
             function register() {
@@ -52,10 +55,43 @@
             }
         </script>
         <style>
+              * {
+                     font-family: 'Jua', sans-serif;
+                }
             html{
                 height: 100%;
                 background-color: #ffffccff;
                 !important
+            }
+            .section{
+                margin-top: 250px;
+                margin-left: auto;
+                margin-right: auto;
+                width: 800px;
+                height: 500px;
+                justify-items: center;
+                background-color: #FCFF7E;
+                border-radius: 40px;
+            }
+            .title{
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 40px;
+            }
+            .container{
+                margin-left: 110px;
+            }
+            .input{
+                border-radius: 10px;
+                border-bottom: solid;
+            }
+            .button{
+                margin-top: 10px;
+                margin-left: 70px;
+                font-family: 'Jua', sans-serif;
+            }
+            input::placeholder{
+                font-weight: bold;
             }
         </style>
     </head>
